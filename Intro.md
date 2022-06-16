@@ -46,7 +46,7 @@ worker1 : worker(1);
 ```
 The dynamic mapping is between workers and jobs, and this kind of mapping depends on the concurrent queue operations on running time.
 
-# Synchronization mechanism
+## Synchronization mechanism
 
 To implement the **Wait/Notify** mechanism, a counter should be defined with a protected type. Each job has one counter with an initial value, which is the number of jobs it depends on. When one of them is completed, the value
 decreases by 1 (i.e. calling the procedure *decr* once). If the return value of *decr* is true, then the job can be executed.
