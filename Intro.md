@@ -22,7 +22,7 @@ protected JobQueue is
   head : index := 0;
   tail : index := 0;
   count : integer range 0..M := 0;
-end JobQueue ;
+end JobQueue;
 ```
 
 Concurrent calls to these entries will be sequentialized by the protected object.
