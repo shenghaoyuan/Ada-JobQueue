@@ -1,0 +1,57 @@
+digraph{
+  start, end, sp1, sp2 [shape = point]
+  subgraph cluster0{
+   label = <<font color='red'><b>TaskTeam 1</b></font>>
+   style = dashed
+   color = blue   
+   subgraph cluster1{
+    label = <<font color='red'><b>TaskTeam 1.1</b></font>>
+    01, 02 [shape = box]
+    sp1, x [shape = point]
+   }
+    subgraph cluster2{
+    label = <<font color='red'><b>TaskTeam 1.2</b></font>>
+    21, 22 [shape = box]
+    sp2, jst [shape = point]
+   }
+   06, 23 [shape = box]
+   f [shape = point]
+  }
+  subgraph cluster3{
+   label = <<font color='red'><b>TaskTeam 2</b></font>>
+   style = dashed
+   color = blue
+   05 [shape = box]
+   sp6, sp9 [shape = point]
+   subgraph cluster4{
+    label = <<font color='red'><b>TaskTeam 2.1</b></font>>
+    subgraph cluster4{
+     label = <<font color='red'><b>TaskTeam 2.1.1</b></font>>
+     07, 08, 09, 10, 11, 12, 14, 15, 16, 17, 18, 19 [shape = box]
+     sp7, sp8 [shape = point]
+    }
+    subgraph cluster5{
+     label = <<font color='red'><b>TaskTeam 2.1.2</b></font>>
+     03, 04, 13, 20, 24, 25 [shape = box]
+     sp4, sp5 [shape = point]
+    }
+   }
+  }
+  start -> sp1 -> 01, 02
+  start -> sp2 -> 21, 22
+  05 -> sp9 -> end
+  03, 04 -> sp4 -> sp9
+  01,02 -> x -> 06
+  21, 22 -> jst -> 23
+  06,23 -> f -> sp6 -> sp8 -> 07, 08, 09 ,10, 11, 12
+  sp6 -> 05
+  07 -> 14
+  08 -> 15
+  09 -> 16
+  10 -> 17
+  11 -> 18
+  12 -> 19
+  13 -> 24 -> 25 -> 04
+  14,15, 16, 17, 18, 19 -> sp7 -> sp5 -> 20, 13
+  20 -> 03
+}

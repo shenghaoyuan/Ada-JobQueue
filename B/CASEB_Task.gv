@@ -1,0 +1,31 @@
+digraph{
+  start, end [shape = point] 
+  01, 02 [shape = box]
+  sp1 [shape = point]
+  
+  subgraph cluster1{
+   label = <<font color='red'><b>TaskTeam 1</b></font>>
+   style = dashed
+   color = blue 
+   03, 04, 05, 06, 07, 08 [shape = box]
+   sp2 [shape = point]   
+  }
+  
+  subgraph cluster3{
+   label = <<font color='red'><b>TaskTeam 2</b></font>>
+   style = dashed
+   color = blue
+   09, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26 [shape = box]
+   sp3, sp4 [shape = point]
+  }
+  start -> 01 -> 02 -> sp1
+  sp1 -> 03, 04, 05, 06, 07, 08 -> sp2 -> sp3
+  sp3 -> 09, 10, 11, 12, 13, 14
+  09 -> 15 -> 21 -> sp4
+  10 -> 16 -> 22 -> sp4
+  11 -> 17 -> 23 -> sp4
+  12 -> 18 -> 24 -> sp4
+  13 -> 19 -> 25 -> sp4
+  14 -> 20 -> 26 -> sp4  
+  sp4 -> end
+}

@@ -1,0 +1,172 @@
+digraph{
+  root, end [shape = point]
+
+  subgraph cluster0{
+   label = <<font color='red'><b>TaskTeam 1</b></font>>
+   34 [shape = box]
+   r1 [shape = point]
+   style = dashed
+   color = blue
+
+     subgraph cluster4{
+       label = <<font color='red'><b>TaskTeam 1.1</b></font>>
+       01, 02, 03, 04, 22, 23, 24, 25  [shape = box]
+       fa1 [shape = point]
+     }
+
+     subgraph cluster5{
+       label = <<font color='red'><b>TaskTeam 1.2</b></font>>
+       50, 18 , 17, 49 [shape = box]
+       b1, e1 [shape = point]
+
+       subgraph cluster6{
+         label = <<font color='red'><b>TaskTeam 1.2.1</b></font>>
+         37, 39  [shape = box]
+         sa1, bx [shape = point]
+       }
+       
+       subgraph cluster7{
+         label = <<font color='red'><b>TaskTeam 1.2.2</b></font>>
+         38, 40  [shape = box]
+         sa2, by [shape = point]
+       }
+     }
+  }
+
+  subgraph cluster1{
+   label = <<font color='red'><b>TaskTeam 2</b></font>>
+   35, 19, 55 [shape = box]
+   r2, e2 [shape = point]
+   style = dashed
+   color = blue
+
+     subgraph cluster8{
+       label = <<font color='red'><b>TaskTeam 2.1</b></font>>
+       05, 06, 07, 08, 26, 27, 28, 29  [shape = box]
+       fb1 [shape = point]
+     }
+
+     subgraph cluster9{
+       label = <<font color='red'><b>TaskTeam 2.2</b></font>>
+       51, 52  [shape = box]
+       f_sb1, b2 [shape =point]
+
+       subgraph cluster10{
+         label = <<font color='red'><b>TaskTeam 2.2.1</b></font>>
+         41, 43  [shape = box]
+         sb1, sbx [shape = point]
+       }
+       subgraph cluster11{
+         label = <<font color='red'><b>TaskTeam 2.2.2</b></font>>
+         42, 44  [shape = box]
+         sb2, sby [shape = point]
+       }
+     }
+  }
+
+  subgraph cluster2{
+   label = <<font color='red'><b>TaskTeam 3</b></font>>
+   style = dashed
+   color = blue
+   36, 20, 57  [shape = box]
+   r3, e3 [shape = point]
+
+     subgraph cluster12{
+       label = <<font color='red'><b>TaskTeam 3.1</b></font>>
+       09, 10, 11, 12, 30, 31, 32, 33  [shape = box]
+       fc1 [shape = point]
+     }
+
+     subgraph cluster13{
+       label = <<font color='red'><b>TaskTeam 3.2</b></font>>
+       53, 54  [shape = box]
+       f_sc1, b3 [shape =point]
+
+       subgraph cluster14{
+         label = <<font color='red'><b>TaskTeam 3.2.1</b></font>>
+         45, 47  [shape = box]
+         sc1, scx [shape = point]
+       }
+       subgraph cluster15{
+         label = <<font color='red'><b>TaskTeam 3.2.2</b></font>>
+         46, 48  [shape = box]
+         sc2, scy [shape = point]
+       }
+     }
+  }
+
+  subgraph cluster3{
+   label = <<font color='red'><b>TaskTeam 4</b></font>>
+   63, 21, 68 [shape = box]
+   r4, e4 [shape = point]
+   style = dashed
+   color = blue
+
+     subgraph cluster12{
+       label = <<font color='red'><b>TaskTeam 4.1</b></font>>
+       13, 14, 15, 16, 59, 60, 61, 62 [shape = box]
+       ffa1 [shape = point]
+     }
+
+     subgraph cluster13{
+       label = <<font color='red'><b>TaskTeam 4.2</b></font>>
+       64, 65, 66, 67  [shape = box]
+       b4, fa8 [shape =point]
+     }
+  }
+  root -> r1, r2, r3, r4
+  //Req1.1
+  r1 -> 01 -> 22
+  r1 -> 02 -> 23
+  r1 -> 03 -> 24
+  r1 -> 04 -> 25
+  r2 -> 05 -> 26
+  r2 -> 06 -> 27
+  r2 -> 07 -> 28
+  r2 -> 08 -> 29
+  r3 -> 09 -> 30
+  r3 -> 10 -> 31
+  r3 -> 11 -> 32
+  r3 -> 12 -> 33
+  
+  //Req1.2
+  22, 23, 24, 25 -> fa1 -> 34
+  26, 27, 28, 29 -> fb1 -> 35
+  30, 31, 32, 33 -> fc1 -> 36
+
+  34 -> b1 -> bx -> 37, 39
+  b1 -> by -> 38, 40
+  35 -> b2 -> sbx -> 41, 43
+  b2 -> sby -> 42, 44
+  36 -> b3 -> scx -> 45, 47
+  b3 -> scy -> 46, 48
+  
+  //Req1.3
+  37, 39 -> sa1 -> 49
+  49 -> 17 -> e1
+  38, 40 -> sa2 -> 50
+  50 -> 18 -> e1
+  41, 43 -> sb1 -> 51
+  42, 44 -> sb2 -> 52
+  45, 47 -> sc1 -> 53
+  46, 48 -> sc2 -> 54
+  
+  //Req1.4
+  51, 52 -> f_sb1 -> 55 -> 19 -> e2
+  53, 54 -> f_sc1 -> 57 -> 20 -> e3
+
+  //Req2.1
+  r4 -> 13 -> 59
+  r4 -> 14 -> 60
+  r4 -> 15 -> 61
+  r4 -> 16 -> 62
+
+  //Req2.2
+  59, 60, 61, 62 -> ffa1 -> 63 -> b4 -> 64, 65
+  
+  //Req2.3
+  64 -> 66
+  65 -> 67
+  66, 67 -> fa8 -> 68 -> 21 -> e4
+  e1 ,e2, e3, e4 -> end
+}
