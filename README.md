@@ -6,7 +6,8 @@ see [Introduction](Intro.md)
 
 ## Environment
 
-download [GNATStudio](https://www.adacore.com/download) from AdaCode and install it
+download [GNATStudio](https://www.adacore.com/download) from AdaCode and install it.
+
 My GNAT version is
 ```shell
 $ gnat --help
