@@ -31,18 +31,27 @@ while : ; do
     shift
 done
 
-# generate Makefile.config
+# generate Makefile.config and _CoqProject
 if [ -z ${compcertdir+x} ]
 then
     echo "coq-compcert by default"
-else
-cat > Makefile.config << EOF
-COMPCERTDIR := $compcertdir
+rm -f Makefile.config
+cat > _CoqProject << EOF
+INSTALLDEFAULTROOT = compcerttso
+-R compcerttso compcerttso
+-R jobqueue jobqueue
 EOF
-echo "The following configuration was saved in Makefile.config:"
+else
+# cat > Makefile.config << EOF
+# COMPCERTDIR := $compcertdir
+# EOF
+cat > _CoqProject << EOF
+INSTALLDEFAULTROOT = compcerttso
+-R compcerttso compcerttso
+-R jobqueue jobqueue
+-R $compcertdir compcert
+EOF
+echo "The following configuration was saved in _CoqProject"
 echo
-cat Makefile.config
+cat _CoqProject
 fi
-
-# generate the CoqProject file
-make CoqProject

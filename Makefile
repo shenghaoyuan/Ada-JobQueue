@@ -1,4 +1,4 @@
--include Makefile.config
+# -include Makefile.config
 
 SED := sed
 CAT := cat
@@ -21,11 +21,6 @@ OCAMLINCS := -I extr # -I src
 
 DIRS := compcerttso jobqueue
 
-COQINCLUDES := INSTALLDEFAULTROOT = compcerttso "\n"
-COQINCLUDES += $(foreach d, $(DIRS),-R $(d) $(d) "\n")
-ifeq (,$(wildcard ./Makefile.config.c))
-	COQINCLUDES +=-R $(COMPCERTDIR) compcert
-endif
 
 all:
 	@echo $@
@@ -69,8 +64,6 @@ document:
 	coq2html $(DOCFLAG) -d html html/glob/*.glob compcerttso/*/*.v
 	coq2html $(DOCFLAG) -d html html/glob/*.glob jobqueue/*.v
 
-CoqProject:
-	@echo $(COQINCLUDES) > _CoqProject
 
 GITDIR=/home/shyuan/GitHub/Ada-JobQueue
 
@@ -100,4 +93,4 @@ clean :
 # We want to keep the .cmi that were built as we go
 .SECONDARY:
 
-.PHONY: all compcerttso jobqueue document CoqProject gitpush clean
+.PHONY: all compcerttso jobqueue document gitpush clean
