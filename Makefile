@@ -81,6 +81,7 @@ gitpush:
 	cp compcerttso/lib/*.v $(GITDIR)/compcerttso/lib
 	cp jobqueue/*.v $(GITDIR)/jobqueue
 	cp Makefile $(GITDIR)
+	cp *.md $(GITDIR)
 	cp configure $(GITDIR)
 
 clean :
