@@ -152,80 +152,13 @@ Definition valid_arg (op : binary_operation) (ty1 : type) (ty2 : type) (v : val)
              end
   | _ => true
  end.
-                           
-(** Semantic of casts.  [cast v1 t1 t2 v2] holds if value [v1],
-  viewed with static type [t1], can be cast to type [t2],
-  resulting in value [v2].  *)
-(** TODO: TBC... *)
-Definition cast_int_int (sz: intsize) (sg: signedness) (i: int) : int :=
-  match sz, sg with
-  | I8, Signed => Int.sign_ext 8 i
-  | I8, Unsigned => Int.zero_ext 8 i
-  | I16, Signed => Int.sign_ext 16 i
-  | I16, Unsigned => Int.zero_ext 16 i 
-  | I32, _ => i
-  end.
-
-Definition cast_int_float (si : signedness) (i: int) : float :=
-  match si with
-  | Signed => Float.floatofint i
-  | Unsigned => Float.floatofintu i
-  end.
-
-Definition cast_float_int (si : signedness) (f: float) : int :=
-  match si with
-  | Signed => Float.intoffloat f
-  | Unsigned => Float.intuoffloat f
-  end.
-
-Definition cast_float_float (sz: floatsize) (f: float) : float :=
-  match sz with
-  | F32 => Float.singleoffloat f
-  | F64 => f
-  end.
-
-Inductive neutral_for_cast: type -> Prop :=
-  | nfc_int: forall sg,
-      neutral_for_cast (Tint I32 sg)
-  | nfc_ptr: forall ty,
-      neutral_for_cast (Tpointer ty)
-  | nfc_array: forall ty sz,
-      neutral_for_cast (Tarray ty sz)
-  | nfc_fun: forall targs tres,
-      neutral_for_cast (Tfunction targs tres).
-
-Inductive cast : val -> type -> type -> val -> Prop :=
-  | cast_ii:   forall i sz2 sz1 si1 si2,            (**r int to int  *)
-      cast (Vint i) (Tint sz1 si1) (Tint sz2 si2)
-           (Vint (cast_int_int sz2 si2 i))
-  | cast_fi:   forall f sz1 sz2 si2,                (**r float to int *)
-      cast (Vfloat f) (Tfloat sz1) (Tint sz2 si2)
-           (Vint (cast_int_int sz2 si2 (cast_float_int si2 f)))
-  | cast_if:   forall i sz1 sz2 si1,                (**r int to float  *)
-      cast (Vint i) (Tint sz1 si1) (Tfloat sz2)
-          (Vfloat (cast_float_float sz2 (cast_int_float si1 i)))
-  | cast_ff:   forall f sz1 sz2,                    (**r float to float *)
-      cast (Vfloat f) (Tfloat sz1) (Tfloat sz2)
-           (Vfloat (cast_float_float sz2 f))
-  | cast_nn_p: forall p t1 t2, (**r no change in data representation *)
-      neutral_for_cast t1 -> neutral_for_cast t2 ->
-      cast (Vptr p) t1 t2 (Vptr p)
-  | cast_nn_i: forall n t1 t2,     (**r no change in data representation *)
-      neutral_for_cast t1 -> neutral_for_cast t2 ->
-      cast (Vint n) t1 t2 (Vint n).
 
 
-(** [load_value_of_type ty v p] computes the value [v] of a datum
-  of type [ty] addressed by pointer [p].  If the type [ty] indicates 
-  an access by value, the value is returned.  If the type [ty] indicates 
-  an access by reference, the pointer value [Vptr p] is returned. *)
+(**r ysh: cast_int_int -> Cop.cast_int_int
+          cast -> Cop.sem_cast (where Prop -> bool)
+ *)
 
-Definition load_value_of_type (ty_dest : type) (v: val) (p: pointer): option val :=
-  match (access_mode ty_dest) with
-  | By_value chunk =>  Some v 
-  | By_reference => Some (Vptr p)
-  | By_nothing => None
-  end.
+(**r ysh: load_value_of_type -> Clight.deref_loc *)
 
 (** Selection of the appropriate case of a [switch], given the value [n]
   of the selector expression. *)
