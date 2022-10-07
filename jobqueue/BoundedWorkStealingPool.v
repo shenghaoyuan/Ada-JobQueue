@@ -26,7 +26,7 @@ function Steal(P:in out Pool) return Object is
 begin
   if Size <= 0 then return Empty; end if;
   O := P.Queue(Index(T mod I64(QUEUE_CAPACITY))).Get;
-  P.Top.CompareAndSet(T, T+1, Done);
+  P.Top.CompareAndSet(T, T+1, Done); --steal modify the TOP
   if Done then
     return O;
   else
@@ -114,28 +114,29 @@ Inductive sem_push (P: pointer) (O: val) (c: memory_chunk) (Index QUEUE_CAPACITY
 
 (**
    function PopBottom(P:in out Pool) return Object is
-      B : I64 := P.bot.Get - 1; -Mread
+      B : I64 := P.bot.Get - 1; -- Mread
       T : I64;
       Size : I64;
    begin
-      P.Bot.Set(B); - Mwrite
-      T := P.Top.get; -Mread
+      P.Bot.Set(B); -- Mwrite // if local_queue.size > 1, pop is done here for the point of view outside ...
+      T := P.Top.get; -- Mread // when we read the TOP, the steal may take the top ... so we may get the negative size ...
       Size := B - T;
-      if Size < 0 then
-	      P.Bot.Set(T);- Mwrite
-	      return Empty; 
+      if Size < 0 then -- someone takes (steals?) an elements, local queue is empty
+	      P.Bot.Set(T); -- Mwrite
+	      return Empty; -- 
       end if;
       declare
-	      O : Object := P.Queue(Index(B mod I64(QUEUE_CAPACITY))).get; -Mread
+	      O : Object := P.Queue(Index(B mod I64(QUEUE_CAPACITY))).get; -- Mread
 	      Done: Boolean;
       begin
-	      if Size > 0 then return O; end if;
-	      P.top.CompareAndSet(T,T+1,Done); - Mmwf
+	      if Size > 0 then return O; end if; -- local queue has enough elements
+        -- case: Size = 0, so T = B - 1, we try to remove the only element
+	      P.top.CompareAndSet(T,T+1,Done); -- Mmwf -- we may not allow to do because someone is doing it...
 	      if not Done then
-	        O := Empty;
+	        O := Empty; -- someone steals the only element, so the local queue is empty
 	      end if;
-	      P.Bot.Set(T+1); - Mwrite
-	      return O;
+	      P.Bot.Set(T+1); -- Mwrite --this is to stop others steal this local queue
+	      return O; -- this may be Empty
       end;
    end PopBottom;
 
@@ -199,7 +200,7 @@ Inductive sem_pop (P: pointer) (c: memory_chunk) (Index QUEUE_CAPACITY: nat): li
         ~(Val.eq T2 T1) ->
           sem_pop P c Index QUEUE_CAPACITY [decl_B; set_B; decl_T; queue_get_Index; queue_casF] Vzero.
 
-(**r 
+(**r
 
 thread0
 - steal q1

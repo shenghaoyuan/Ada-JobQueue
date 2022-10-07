@@ -162,6 +162,7 @@ Definition valid_arg (op : binary_operation) (ty1 : type) (ty2 : type) (v : val)
 
 (** Selection of the appropriate case of a [switch], given the value [n]
   of the selector expression. *)
+...
 
 Fixpoint select_switch (n: int) (sl: labeled_statements)
                        {struct sl}: labeled_statements :=
