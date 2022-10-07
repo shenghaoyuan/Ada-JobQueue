@@ -57,24 +57,46 @@ Inductive atomic_statement : Set :=  (*r atomic *)
  | AScas : atomic_statement (*r compare and swap *)
  | ASlkinc : atomic_statement (*r locked inc *).
 
-Inductive statement : Type :=  (*r statements *)
- | Sskip : statement (*r do nothing *)
- | Sassign : expr -> expr -> statement (*r assignment [lvalue = rvalue] *)
- | Scall : opt_lhs -> expr -> es -> statement (*r function or procedure call *)
- | Ssequence : statement -> statement -> statement (*r sequence *)
- | Sifthenelse : expr -> statement -> statement -> statement (*r conditional *)
+(**r ysh: rename statement to tso_statement in order to avoid any confusions *)
+
+Inductive tso_statement : Type :=  (*r statements *)
+ | Sskip : tso_statement                                                  (*r do nothing *)
+ | Sassign : expr -> expr -> tso_statement                                (*r assignment [lvalue = rvalue] *)
+ | Sset : ident -> expr -> tso_statement   (**r ysh: now *)               (*r assignment tempvar = rvalue *)
+ | Scall : opt_lhs (**r option ident *) -> expr -> es -> tso_statement    (*r function or procedure call *)
+ (**r | Sbuiltin: option ident -> external_function -> typelist -> list expr -> statement *)
+ | Ssequence : tso_statement -> tso_statement -> tso_statement            (*r sequence *)
+ | Sifthenelse : expr -> tso_statement -> tso_statement -> tso_statement  (*r conditional *)
+ | Sloop : tso_statement -> tso_statement -> tso_statement                (*r infinite loop *)
+ (*
  | Swhile : expr -> statement -> statement (*r while *)
  | Sdowhile : expr -> statement -> statement (*r do while *)
  | Sfor : statement -> expr -> statement -> statement -> statement (*r for loop *)
- | Sbreak : statement (*r break *)
- | Scontinue : statement (*r continue *)
- | Sreturn : opt_e -> statement (*r return *)
- | Sswitch : expr -> labeled_statements -> statement (*r switch *)
- | Slabel : label -> statement -> statement (*r labelled statement *)
- | Sgoto : label -> statement (*r goto *)
- | Sthread_create : expr -> expr -> statement (*r thread creation *)
- | Satomic : opt_lhs -> atomic_statement -> es -> statement (*r atomic operation *)
- | Smfence : statement (*r mfence *)
-with labeled_statements : Type :=  (*r labeled statements *)
+  *)
+ | Sbreak : tso_statement                                                 (*r break *)
+ | Scontinue : tso_statement                                              (*r continue *)
+ | Sreturn : opt_e -> tso_statement                                       (*r return *)
+ | Sswitch : expr -> labeled_statements -> tso_statement                  (*r switch *)
+ | Slabel : label -> tso_statement -> tso_statement                       (*r labelled statement *)
+ | Sgoto : label -> tso_statement                                         (*r goto *)
+ (**r ysh: CompCertTSO specific *)
+ | Sthread_create : expr -> expr -> tso_statement                         (*r thread creation *)
+ | Satomic : opt_lhs -> atomic_statement -> es -> tso_statement           (*r atomic operation *)
+ | Smfence : tso_statement                                                (*r mfence *)
+
+with labeled_statements : Type :=                                         (*r cases of a switch  *)
+ | LSnil: labeled_statements
+ | LScons: option Z -> tso_statement -> labeled_statements -> labeled_statements.
+
+ (*
  | LSdefault : statement -> labeled_statements (*r default *)
- | LScase : int -> statement -> labeled_statements -> labeled_statements (*r labeled case *).
+ | LScase : int -> statement -> labeled_statements -> labeled_statements (*r labeled case *). *)
+
+Definition Swhile (e: expr) (s: tso_statement) :=
+  Sloop (Ssequence (Sifthenelse e Sskip Sbreak) s) Sskip.
+
+Definition Sdowhile (s: tso_statement) (e: expr) :=
+  Sloop s (Sifthenelse e Sskip Sbreak).
+
+Definition Sfor (s1: tso_statement) (e2: expr) (s3: tso_statement) (s4: tso_statement) :=
+  Ssequence s1 (Sloop (Ssequence (Sifthenelse e2 Sskip Sbreak) s3) s4).
